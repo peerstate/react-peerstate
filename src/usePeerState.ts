@@ -25,7 +25,10 @@ export const usePeerState = function <StateTreeType>(
   );
   const [state, dispatch] = useReducer<
     Reducer<InternalState<StateTreeType>, Action>
-  >(nextState, { peerState: initialState, keys: keychain });
+  >(nextState, {
+    peerState: initialState,
+    keys: keychain,
+  });
   return {
     state: state.peerState,
     dispatch,
