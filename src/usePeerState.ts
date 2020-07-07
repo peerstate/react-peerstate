@@ -1,9 +1,10 @@
-import { useReducer, Reducer } from "react";
+import { useState } from "react";
 import {
   createPeerState,
   AuthFilter,
   EncryptionFilter,
   Keychain,
+  withRetries,
   Action,
 } from "@peerstate/core";
 
@@ -18,20 +19,19 @@ export const usePeerState = function <StateTreeType>(
   encryptionFilter: EncryptionFilter<StateTreeType>,
   keychain: Keychain
 ) {
-  const { nextState, sign: signWithState } = createPeerState(
-    authFilter,
-    encryptionFilter,
-    keychain
+  const { nextState, sign: signWithState } = withRetries(
+    createPeerState(authFilter, encryptionFilter, keychain)
   );
-  const [state, dispatch] = useReducer<
-    Reducer<InternalState<StateTreeType>, Action>
-  >(nextState, {
+  const [state, setState] = useState<InternalState<StateTreeType>>({
     peerState: initialState,
     keys: keychain,
   });
   return {
     state: state.peerState,
-    dispatch,
+    dispatch: (a: Action | false) =>
+      nextState(state, a).then((s: InternalState<StateTreeType>) =>
+        setState(s)
+      ),
     sign: signWithState.bind(null, state),
   };
 };
