@@ -1,6 +1,6 @@
 {
   "name": "@peerstate/react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "react hooks integration for peerstate",
   "repository": "git@github.com:peerstate/react-peerstate.git",
   "author": "Bryan Goldstein",
